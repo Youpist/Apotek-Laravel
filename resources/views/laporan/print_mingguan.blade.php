@@ -110,6 +110,12 @@
         <p>Jl. Raya Margonda No.777</p>
 
         <h3>LAPORAN PENJUALAN MINGGUAN</h3>
+
+
+        <p>
+            Periode: {{ \Carbon\Carbon::parse($awal)->format('d F Y') }} -
+            {{ \Carbon\Carbon::parse($akhir)->format('d F Y') }}
+        </p>
     </div>
 
     <div class="info">

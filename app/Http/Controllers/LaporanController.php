@@ -9,33 +9,32 @@ use Illuminate\Http\Request;
 class LaporanController extends Controller
 {
     // Laporan Mingguan
-    public function mingguan()
-    {
-        $mulai = Carbon::now()->startOfWeek();
+    public function mingguan(Request $request)
+{
+    $query = Transaksi::with(['pelanggan','user']);
 
-        $akhir = Carbon::now()->endOfWeek();
-
-        $transaksi = Transaksi::with([
-                'pelanggan',
-                'user'
-            ])
-            ->whereBetween(
-                'tanggal',
-                [$mulai, $akhir]
-            )
-            ->get();
-
-        $total =
-            $transaksi->sum('total');
-
-        return view(
-            'laporan.mingguan',
-            compact(
-                'transaksi',
-                'total'
-            )
-        );
+    if($request->filled('awal') && $request->filled('akhir')){
+        $query->whereBetween('tanggal',[
+            $request->awal,
+            $request->akhir
+        ]);
+    }else{
+        $query->whereBetween('tanggal',[
+            now()->startOfWeek(),
+            now()->endOfWeek()
+        ]);
     }
+
+    $transaksi = $query->get();
+
+    $total = $transaksi->sum('total');
+
+    return view('laporan.mingguan',compact(
+        'transaksi',
+        'total'
+    ));
+}
+
 
     // Laporan Bulanan
     public function bulanan(Request $request)
@@ -59,32 +58,27 @@ class LaporanController extends Controller
     ));
 }
 
-    public function printMingguan()
+    public function printMingguan(Request $request)
 {
-    $mulai = now()->startOfWeek();
+    $awal = $request->awal;
+    $akhir = $request->akhir;
 
-    $akhir = now()->endOfWeek();
+    $transaksi = Transaksi::with(['pelanggan','user']);
 
-    $transaksi = Transaksi::with([
-            'pelanggan',
-            'user'
-        ])
-        ->whereBetween(
-            'tanggal',
-            [$mulai, $akhir]
-        )
-        ->get();
+    if($awal && $akhir){
+        $transaksi->whereBetween('tanggal', [$awal, $akhir]);
+    }
 
-    $total =
-        $transaksi->sum('total');
+    $transaksi = $transaksi->get();
 
-    return view(
-        'laporan.print_mingguan',
-        compact(
-            'transaksi',
-            'total'
-        )
-    );
+    $total = $transaksi->sum('total');
+
+    return view('laporan.print_mingguan', compact(
+        'transaksi',
+        'total',
+        'awal',
+        'akhir'
+    ));
 }
     public function printBulanan(Request $request)
 {
