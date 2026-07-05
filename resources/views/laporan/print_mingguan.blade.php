@@ -1,115 +1,227 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html lang="id">
 
-    <title>
-        Cetak Laporan Mingguan
-    </title>
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Mingguan</title>
 
     <style>
-
-        body{
-            font-family: Arial;
-            padding:20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
-        table{
-            width:100%;
+        body {
+            padding: 35px;
+            color: #222;
+            font-size: 14px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            color: #198754;
+        }
+
+        .header h3 {
+            margin-top: 5px;
+        }
+
+        .header p {
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .info {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
             border-collapse: collapse;
-            margin-top:20px;
+            margin-top: 15px;
         }
 
-        table, th, td{
-            border:1px solid black;
+        th {
+            background: #198754;
+            color: white;
+            padding: 10px;
+            border: 1px solid #ddd;
         }
 
-        th, td{
-            padding:10px;
+        td {
+            padding: 9px;
+            border: 1px solid #ddd;
         }
 
+        tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .summary {
+            margin-top: 25px;
+            width: 320px;
+            float: right;
+        }
+
+        .summary table {
+            width: 100%;
+        }
+
+        .summary td {
+            padding: 10px;
+        }
+
+        .footer {
+            clear: both;
+            margin-top: 80px;
+            text-align: center;
+            color: #666;
+        }
+
+        @media print {
+
+            body {
+                padding: 15px;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 12mm;
+            }
+
+        }
     </style>
 
 </head>
+
 <body>
 
-    <center>
+    <div class="header">
+        <h1>APOTEK SEHAT</h1>
+        <p>Jl. Raya Margonda No.777</p>
 
-        <h2>APOTEK SEHAT</h2>
+        <h3>LAPORAN PENJUALAN MINGGUAN</h3>
+    </div>
 
-        <h3>Laporan Mingguan</h3>
+    <div class="info">
 
-    </center>
+        <div>
+            <b>Tanggal Cetak :</b>
+            {{ date('d-m-Y H:i') }}
+        </div>
 
-    <hr>
+        <div>
+            <b>Total Transaksi :</b>
+            {{ $transaksi->count() }}
+        </div>
+
+    </div>
 
     <table>
 
         <thead>
 
             <tr>
-
                 <th>No</th>
+                <th>Tanggal</th>
                 <th>Pelanggan</th>
                 <th>Apoteker</th>
-                <th>Tanggal</th>
                 <th>Total</th>
-
             </tr>
 
         </thead>
 
         <tbody>
 
-            @foreach($transaksi as $item)
+            @php
+                $total = 0;
+            @endphp
 
-            <tr>
+            @foreach ($transaksi as $item)
+                <tr>
 
-                <td>
-                    {{ $loop->iteration }}
-                </td>
+                    <td>{{ $loop->iteration }}</td>
 
-                <td>
-                    {{ $item->pelanggan->nama ?? '-' }}
-                </td>
+                    <td>{{ $item->tanggal }}</td>
 
-                <td>
-                    {{ $item->user->name ?? '-' }}
-                </td>
+                    <td>{{ $item->pelanggan->nama }}</td>
 
-                <td>
-                    {{ $item->tanggal }}
-                </td>
+                    <td>{{ $item->user->name }}</td>
 
-                <td>
-                    Rp {{ number_format($item->total) }}
-                </td>
+                    <td>
+                        Rp {{ number_format($item->total, 0, ',', '.') }}
+                    </td>
 
-            </tr>
+                </tr>
 
+                @php
+                    $total += $item->total;
+                @endphp
             @endforeach
 
         </tbody>
 
     </table>
 
-    <h3 style="margin-top:20px;">
+    <div class="summary">
 
-        Total Pendapatan:
-        Rp {{ number_format($total) }}
+        <table>
 
-    </h3>
+            <tr>
+
+                <td><b>Total Transaksi</b></td>
+
+                <td>{{ $transaksi->count() }}</td>
+
+            </tr>
+
+            <tr>
+
+                <td><b>Total Pendapatan</b></td>
+
+                <td>
+
+                    <b>
+                        Rp {{ number_format($total, 0, ',', '.') }}
+                    </b>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <div class="footer">
+
+        Laporan dibuat otomatis oleh Sistem Informasi Apotek
+
+    </div>
 
     <script>
+        window.onload = function() {
 
-        window.print();
-
-        window.onafterprint = function(){
-
-            window.history.back();
+            window.print();
 
         }
 
+        window.onafterprint = function() {
+
+            history.back();
+
+        }
     </script>
 
 </body>
+
 </html>

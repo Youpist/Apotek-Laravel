@@ -10,7 +10,7 @@
 
     <div class="card-body">
 
-        <form action="{{ route('obat.update', $obat->id) }}"
+        <form action="{{ route('obat.update', $obats->id) }}"
               method="POST">
 
             @csrf
@@ -22,7 +22,7 @@
                 <input type="text"
                        name="kode_obat"
                        class="form-control"
-                       value="{{ $obat->kode_obat }}">
+                       value="{{ $obats->kode_obat }}">
             </div>
 
             <div class="mb-3">
@@ -31,7 +31,7 @@
                 <input type="text"
                        name="nama_obat"
                        class="form-control"
-                       value="{{ $obat->nama_obat }}">
+                       value="{{ $obats->nama_obat }}">
             </div>
 
             <div class="mb-3">
@@ -40,7 +40,7 @@
                 <input type="text"
                        name="kategori"
                        class="form-control"
-                       value="{{ $obat->kategori }}">
+                       value="{{ $obats->kategori }}">
             </div>
 
             <div class="mb-3">
@@ -49,7 +49,7 @@
                 <input type="number"
                        name="harga"
                        class="form-control"
-                       value="{{ $obat->harga }}">
+                       value="{{ $obats->harga }}">
             </div>
 
             <div class="mb-3">
@@ -58,7 +58,7 @@
                 <input type="number"
                        name="stok"
                        class="form-control"
-                       value="{{ $obat->stok }}">
+                       value="{{ $obats->stok }}">
             </div>
 
             <div class="mb-3">
@@ -67,7 +67,7 @@
                 <input type="date"
                        name="expired_date"
                        class="form-control"
-                       value="{{ $obat->expired_date }}">
+                       value="{{ $obats->expired_date }}">
             </div>
 
             <button class="btn btn-primary">

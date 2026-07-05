@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class LaporanController extends Controller
 {
@@ -37,33 +38,26 @@ class LaporanController extends Controller
     }
 
     // Laporan Bulanan
-    public function bulanan()
-    {
-        $bulan =
-            Carbon::now()->month;
+    public function bulanan(Request $request)
+{
+    $bulan = $request->bulan ?? now()->month;
+    $tahun = $request->tahun ?? now()->year;
 
-        $tahun =
-            Carbon::now()->year;
+    $transaksi = Transaksi::with(['pelanggan','user'])
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', $tahun)
+        ->orderBy('tanggal','desc')
+        ->get();
 
-        $transaksi = Transaksi::with([
-                'pelanggan',
-                'user'
-            ])
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->get();
+    $total = $transaksi->sum('total');
 
-        $total =
-            $transaksi->sum('total');
-
-        return view(
-            'laporan.bulanan',
-            compact(
-                'transaksi',
-                'total'
-            )
-        );
-    }
+    return view('laporan.bulanan', compact(
+        'transaksi',
+        'total',
+        'bulan',
+        'tahun'
+    ));
+}
 
     public function printMingguan()
 {
@@ -92,30 +86,23 @@ class LaporanController extends Controller
         )
     );
 }
-    public function printBulanan()
+    public function printBulanan(Request $request)
 {
-    $bulan = now()->month;
-
-    $tahun = now()->year;
-
-
-    $transaksi = Transaksi::with([
-            'pelanggan',
-            'user'
-        ])
-        ->whereMonth('tanggal', $bulan)
-        ->whereYear('tanggal', $tahun)
-        ->get();
-
-    $total =
-        $transaksi->sum('total');
-
-    return view(
-        'laporan.print_bulanan',
-        compact(
-            'transaksi',
-            'total'
-        )
-    );
+    $bulan = $request->bulan ?? now()->month;
+    $tahun = $request->tahun ?? now()->year;
+    
+    $transaksi = Transaksi::with(['pelanggan','user'])
+    ->whereMonth('tanggal', $bulan)
+    ->whereYear('tanggal', $tahun)
+    ->orderBy('tanggal','desc')
+    ->get();
+    $total = $transaksi->sum('total');
+    
+    return view('laporan.print_bulanan', compact(
+        'transaksi',
+        'bulan',
+        'tahun',
+        'total'
+    ));
 }
 }

@@ -20,6 +20,37 @@
                     {{ session('success') }}
                 </div>
             @endif
+            <div class="row mb-3">
+
+                <div class="col-md-6">
+
+                    <form action="{{ route('transaksi.index') }}" method="GET">
+
+                        <div class="input-group">
+
+                            <input type="text" name="keyword" class="form-control" placeholder="Cari nama pelanggan..."
+                                value="{{ request('keyword') }}">
+
+                            <button class="btn btn-primary">
+
+                                Cari
+
+                            </button>
+
+                            <a href="{{ route('transaksi.index') }}" class="btn btn-secondary">
+
+                                Reset
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
 
             <table class="table table-bordered">
 
@@ -41,7 +72,7 @@
 
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item->pelanggan->nama }}</td>
-                            <td>{{ $item->user->name ?? 'Tidak Ada'}}</td>
+                            <td>{{ $item->user->name ?? 'Tidak Ada' }}</td>
                             <td>{{ $item->tanggal }}</td>
                             <td>Rp {{ number_format($item->total) }}</td>
                             <td>

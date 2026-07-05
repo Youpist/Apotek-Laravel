@@ -2,31 +2,138 @@
 <html>
 
 <head>
-
+    <meta charset="UTF-8">
     <title>Struk Pembelian</title>
 
     <style>
+        @page {
+            size: 80mm auto;
+            margin: 5mm;
+        }
+
+        @media print {
+
+            body {
+                margin: 0;
+                background: white;
+            }
+
+            .struk {
+                width: 72mm;
+                margin: auto;
+                box-shadow: none;
+                border: none;
+                padding: 0;
+            }
+
+        }
+
         body {
-            font-family: Arial;
-            padding: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ececec;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .struk {
+
+            width: 440px;
+            margin: auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, .15);
+
+        }
+
+        h1 {
+
+            margin: 0;
+            text-align: center;
+            font-size: 30px;
+
+        }
+
+        h4 {
+
+            text-align: center;
+            font-weight: normal;
+            margin-top: 5px;
+            margin-bottom: 20px;
+
+        }
+
+        hr {
+
+            margin: 20px 0;
+
         }
 
         table {
+
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+
         }
 
-        table,
-        th,
-        td {
-            border: 1px solid black;
-        }
+        table th {
 
-        th,
-        td {
+            background: #198754;
+            color: white;
             padding: 10px;
-            text-align: left;
+
+        }
+
+        table td {
+
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+
+        }
+
+        .text-right {
+
+            text-align: right;
+
+        }
+
+        .total {
+
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: right;
+
+        }
+
+        .footer {
+
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+
+        }
+
+        @media print {
+
+            body {
+
+                background: white;
+
+            }
+
+            .btn {
+
+                display: none;
+
+            }
+
+            .struk {
+
+                box-shadow: none;
+
+            }
+
         }
     </style>
 
@@ -34,97 +141,112 @@
 
 <body>
 
-    <center>
+    <div class="struk">
 
-        <h2>APOTEK SEHAT</h2>
+        <h1>APOTEK SEHAT</h1>
 
-        <p>
-            Jl. Raya Margonda No. 777
-        </p>
+        <h4>
+            Jl. Raya Margonda No.777 <br>
+            Telp. (021) 12345678
+        </h4>
 
-    </center>
+        <hr>
 
-    <hr>
-
-    <p>
-        <strong>Tanggal:</strong>
-        {{ $transaksi->tanggal }}
-    </p>
-
-    <p>
-        <strong>Pelanggan:</strong>
-        {{ $transaksi->pelanggan->nama }}
-    </p>
-
-    <p>
-        <strong>Apoteker:</strong>
-        {{ $transaksi->user->name }}
-    </p>
-
-    <table>
-
-        <thead>
+        <table border="0">
 
             <tr>
-                <th>Obat</th>
-                <th>Harga</th>
-                <th>Jumlah</th>
-                <th>Subtotal</th>
+                <td width="170"><b>No Transaksi</b></td>
+                <td>: TRX{{ str_pad($transaksi->id, 5, '0', STR_PAD_LEFT) }}</td>
             </tr>
 
-        </thead>
+            <tr>
+                <td><b>Tanggal</b></td>
+                <td>: {{ \Carbon\Carbon::parse($transaksi->tanggal)->translatedFormat('d F Y') }}</td>
+            </tr>
 
-        <tbody>
+            <tr>
+                <td><b>Pelanggan</b></td>
+                <td>: {{ $transaksi->pelanggan->nama }}</td>
+            </tr>
 
-            @foreach ($transaksi->detail as $item)
+            <tr>
+                <td><b>Kasir</b></td>
+                <td>: {{ $transaksi->user->name }}</td>
+            </tr>
+
+        </table>
+
+        <br>
+
+        <table>
+
+            <thead>
+
                 <tr>
 
-                    <td>
-                        {{ $item->obat->nama_obat }}
-                    </td>
-
-                    <td>
-                        Rp {{ number_format($item->harga) }}
-                    </td>
-
-                    <td>
-                        {{ $item->jumlah }}
-                    </td>
-
-                    <td>
-                        Rp {{ number_format($item->subtotal) }}
-                    </td>
+                    <th>No</th>
+                    <th>Nama Obat</th>
+                    <th>Qty</th>
+                    <th>Harga</th>
+                    <th>Subtotal</th>
 
                 </tr>
-            @endforeach
 
-        </tbody>
+            </thead>
 
-    </table>
+            <tbody>
 
-    <h3 style="margin-top:20px;">
+                @foreach ($transaksi->detail as $item)
+                    <tr>
 
-        Total:
-        Rp {{ number_format($transaksi->total) }}
+                        <td>{{ $loop->iteration }}</td>
 
-    </h3>
+                        <td>{{ $item->obat->nama }}</td>
 
-    <br><br>
+                        <td>{{ $item->jumlah }}</td>
 
-    <center>
+                        <td class="text-right">
+                            Rp {{ number_format($item->harga) }}
+                        </td>
 
-        Terima kasih telah berbelanja
+                        <td class="text-right">
+                            Rp {{ number_format($item->subtotal) }}
+                        </td>
 
-    </center>
+                    </tr>
+                @endforeach
+
+            </tbody>
+
+        </table>
+
+        <div class="total">
+
+            TOTAL :
+            Rp {{ number_format($transaksi->total) }}
+
+        </div>
+
+        <div class="footer">
+
+            ===================================<br>
+
+            Terima kasih telah berbelanja <br>
+
+            Semoga lekas sembuh 😊
+
+        </div>
+
+    </div>
 
     <script>
         window.print();
 
         window.onafterprint = function() {
 
-            window.history.back();
+            history.back();
 
-        };
+        }
     </script>
 
 </body>

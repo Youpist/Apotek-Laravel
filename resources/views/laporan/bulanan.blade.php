@@ -1,98 +1,142 @@
 @extends('layouts.app')
 
 @section('content')
+    <h3 class="mb-4">
+        Laporan Bulanan
+    </h3>
 
-<h3 class="mb-4">
-    Laporan Bulanan
-</h3>
+    <a href="{{ route('laporan.bulanan.print', [
+        'bulan' => $bulan,
+        'tahun' => $tahun,
+    ]) }}" class="btn btn-success"
+        target="">
 
-<a href="{{ route('laporan.bulanan.print') }}"
-   class="btn btn-success mb-3">
+        <i class="fas fa-print"></i>
+        Cetak Laporan
 
-    Cetak Laporan
+    </a>
 
-</a>
+    <div class="card shadow border-0">
 
-<div class="card shadow border-0">
+        <div class="card-body">
 
-    <div class="card-body">
+            <h5 class="mb-3">
 
-        <h5 class="mb-3">
+                Total Pendapatan:
+                <strong>
 
-            Total Pendapatan:
-            <strong>
+                    Rp {{ number_format($total) }}
 
-                Rp {{ number_format($total) }}
+                </strong>
 
-            </strong>
+            </h5>
+            <form method="GET" action="{{ route('laporan.bulanan') }}" class="row mb-3">
 
-        </h5>
+                <div class="col-md-3">
 
-        <table class="table table-bordered">
+                    <select name="bulan" class="form-select">
 
-            <thead>
+                        @for ($i = 1; $i <= 12; $i++)
+                            <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>
 
-                <tr>
+                                {{ DateTime::createFromFormat('!m', $i)->format('F') }}
 
-                    <th>No</th>
-                    <th>Pelanggan</th>
-                    <th>Apoteker</th>
-                    <th>Tanggal</th>
-                    <th>Total</th>
+                            </option>
+                        @endfor
 
-                </tr>
+                    </select>
 
-            </thead>
+                </div>
 
-            <tbody>
+                <div class="col-md-2">
 
-                @forelse($transaksi as $item)
+                    <select name="tahun" class="form-select">
 
-                <tr>
+                        @for ($i = date('Y'); $i >= 2023; $i--)
+                            <option value="{{ $i }}" {{ $tahun == $i ? 'selected' : '' }}>
 
-                    <td>
-                        {{ $loop->iteration }}
-                    </td>
+                                {{ $i }}
 
-                    <td>
-                        {{ $item->pelanggan->nama ?? '-' }}
-                    </td>
+                            </option>
+                        @endfor
 
-                    <td>
-                        {{ $item->user->name ?? '-' }}
-                    </td>
+                    </select>
 
-                    <td>
-                        {{ $item->tanggal }}
-                    </td>
+                </div>
 
-                    <td>
-                        Rp {{ number_format($item->total) }}
-                    </td>
+                <div class="col-md-2">
 
-                </tr>
+                    <button class="btn btn-primary">
 
-                @empty
+                        Tampilkan
 
-                <tr>
+                    </button>
 
-                    <td colspan="5"
-                        class="text-center">
+                </div>
 
-                        Tidak ada data
+            </form>
 
-                    </td>
+            <table class="table table-bordered">
 
-                </tr>
+                <thead>
 
-                @endforelse
+                    <tr>
 
-            </tbody>
+                        <th>No</th>
+                        <th>Pelanggan</th>
+                        <th>Apoteker</th>
+                        <th>Tanggal</th>
+                        <th>Total</th>
 
-        </table>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @forelse($transaksi as $item)
+                        <tr>
+
+                            <td>
+                                {{ $loop->iteration }}
+                            </td>
+
+                            <td>
+                                {{ $item->pelanggan->nama ?? '-' }}
+                            </td>
+
+                            <td>
+                                {{ $item->user->name ?? '-' }}
+                            </td>
+
+                            <td>
+                                {{ $item->tanggal }}
+                            </td>
+
+                            <td>
+                                Rp {{ number_format($item->total) }}
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td colspan="5" class="text-center">
+
+                                Tidak ada data
+
+                            </td>
+
+                        </tr>
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
-
-</div>
-
 @endsection

@@ -37,6 +37,10 @@
         <h2>APOTEK SEHAT</h2>
 
         <h3>Laporan Bulanan</h3>
+        
+        <h5>
+            Bulan: {{ \Carbon\Carbon::createFromDate($tahun, $bulan)->format('F Y') }}
+        </h5>
 
     </center>
 

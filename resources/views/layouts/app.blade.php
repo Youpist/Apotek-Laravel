@@ -44,9 +44,7 @@
 <body>
     @if (auth()->user()->role == 'admin')
         <a href="{{ route('users.index') }}" class="nav-link">
-
-            Data User
-
+            Dashboard Admin
         </a>
     @endif
 

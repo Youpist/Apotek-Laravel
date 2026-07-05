@@ -14,10 +14,25 @@ class TransaksiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $transaksi = Transaksi::with('pelanggan')->orderby('id', 'asc')->paginate(10);
-        return view('transaksi.index', compact('transaksi'));
+        $keyword = $request->keyword;
+        $transaksi = Transaksi::with([
+            'pelanggan',
+            'user'
+        ])
+            ->whereHas('pelanggan', function ($query) use ($keyword) {
+                $query->where('nama', 'like', "%$keyword%");
+            })
+            ->orWhereHas('user', function ($query) use ($keyword) {
+                $query->where('name', 'like', "%$keyword%");
+            })
+            ->orWhere('tanggal', 'like', "%$keyword%")
+            ->orWhere('total', 'like', "%$keyword%")
+            ->latest()
+            ->paginate(10);
+
+            return view('transaksi.index', compact('transaksi', 'keyword'));
     }
 
     /**
