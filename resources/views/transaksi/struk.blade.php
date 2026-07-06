@@ -201,7 +201,7 @@
 
                         <td>{{ $loop->iteration }}</td>
 
-                        <td>{{ $item->obat->nama }}</td>
+                        <td>{{ $item->obat->nama_obat }}</td>
 
                         <td>{{ $item->jumlah }}</td>
 
