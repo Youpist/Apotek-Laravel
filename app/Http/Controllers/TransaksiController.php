@@ -52,6 +52,24 @@ class TransaksiController extends Controller
 {
     $total = 0;
 
+    foreach($request->obat_id as $key => $obatId)
+    {
+        $obat = Obat::find($obatId);
+        $jumlah = $request->jumlah[$key];
+
+       if($jumlah > $obat->stok){
+        
+       return redirect()->back()
+       ->withInput()->with('error', 'Stok obat ' . $obat->nama_obat . ' tidak mencukupi. Stok tersedia: ' . $obat->stok);
+       }
+
+       if($jumlah <= 0) {
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Jumlah obat ' . $obat->nama_obat . ' harus lebih besar dari 0.');
+    }
+    }
+
     $transaksi = Transaksi::create([
         'pelanggan_id' => $request->pelanggan_id,
         'user_id' => auth()->id(),

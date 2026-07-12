@@ -8,6 +8,13 @@
         </div>
 
         <div class="card-body">
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Gagal!</strong>
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
             <form action="{{ route('transaksi.store') }}" method="POST">
 
@@ -54,9 +61,9 @@
                                 <select name="obat_id[]" class="form-control obatSelect">
 
                                     @foreach ($obat as $item)
-                                        <option value="{{ $item->id }}" data-harga="{{ $item->harga }}">
+                                        <option value="{{ $item->id }}" data-stok="{{ $item->stok }}" data-harga="{{ $item->harga }}">
 
-                                            {{ $item->nama_obat }}
+                                           {{ $item->kode_obat }} - {{ $item->nama_obat }}
                                             - Stok: {{ $item->stok }}
 
                                         </option>
@@ -74,7 +81,7 @@
 
                             <td>
 
-                                <input type="number" name="jumlah[]" class="form-control" required>
+                                <input type="number" name="jumlah[]" class="form-control" min="1" required>
 
                             </td>
 
